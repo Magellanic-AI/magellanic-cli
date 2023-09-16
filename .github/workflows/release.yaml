@@ -28,7 +28,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: "https://go.dev/dl/go1.21.1.linux-amd64.tar.gz"
-          binary_name: "test-binary"
+          binary_name: "magellanic-cli"
           extra_files: LICENSE README.md
           sha256sum: TRUE
           md5sum: TRUE
