@@ -1,5 +1,5 @@
 /*
-Copyright © 2023 Albert David Lewandowski a.lewandowski@magellanic.ai
+Copyright © 2023 Magellanic <contact@magellanic.ai>
 */
 package main
 
