@@ -1,6 +1,5 @@
-/*
-Copyright © 2023 Albert David Lewandowski a.lewandowski@magellanic.ai
-*/
+// Package config /*
+// Copyright © 2023 Magellanic <contact@magellanic.ai>
 package config
 
 import (
@@ -11,7 +10,6 @@ import (
 
 const apiPath = "/public-api/configs"
 
-// configCmd represents the config/config command
 var configCmd = &cobra.Command{
 	Use: "config",
 }
