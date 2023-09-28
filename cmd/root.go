@@ -1,6 +1,5 @@
-/*
-Copyright © 2023 Albert David Lewandowski a.lewandowski@magellanic.ai
-*/
+// Package cmd /*
+// Copyright © 2023 Magellanic <contact@magellanic.ai>
 package cmd
 
 import (
@@ -13,46 +12,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RootCmd represents the base command when called without any subcommands
-var (
-	RootCmd = &cobra.Command{
-		Use: "magellanic-cli",
-		// Uncomment the following line if your bare application
-		// has an action associated with it:
-		// Run: func(cmd *cobra.Command, args []string) { },
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			dotenvPath, err := cmd.Flags().GetString("dotenv_path")
-			if err != nil {
-				return err
-			}
-			if dotenvPath != "" {
-				viper.SetConfigType("env")
-				viper.SetConfigFile(dotenvPath)
-				if err := viper.ReadInConfig(); err != nil {
-					return err
-				}
-			}
-			cmd.Flags().VisitAll(func(f *pflag.Flag) {
-				viper.BindPFlag(f.Name, f)
-				if !f.Changed && viper.IsSet(f.Name) {
-					val := viper.Get(f.Name)
-					cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
-				}
-			})
-			err = validateParams(cmd)
-			if err != nil {
-				return err
-			}
-			return nil
-		},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return cmd.Help()
-		},
-	}
-)
+const ViperPrefix = "mgl_"
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the RootCmd.
+// RootCmd represents the base command when called without any subcommands
+var RootCmd = &cobra.Command{
+	Use: "magellanic-cli",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		dotenvPath, err := cmd.Flags().GetString("cli_config_path")
+		if err != nil {
+			return err
+		}
+		if dotenvPath != "" {
+			viper.SetConfigType("env")
+			viper.SetConfigFile(dotenvPath)
+			_ = viper.ReadInConfig()
+		}
+		cmd.Flags().VisitAll(func(f *pflag.Flag) {
+			viper.BindPFlag(ViperPrefix+f.Name, f)
+			if !f.Changed && viper.IsSet(ViperPrefix+f.Name) {
+				val := viper.Get(ViperPrefix + f.Name)
+				cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
+			}
+		})
+		err = validateParams(cmd)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
+	},
+}
+
 func Execute() {
 	err := RootCmd.Execute()
 	if err != nil {
@@ -62,11 +54,11 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().StringP("api_key", "a", "", "API key")
-	viper.BindEnv("api_key", "API_KEY")
+	viper.BindEnv("mgl_api_key", "MGL_API_KEY")
 	RootCmd.PersistentFlags().StringP("api_url", "u", "https://api.magellanic.ai", "API url")
-	viper.BindEnv("api_url", "API_URL")
-	RootCmd.PersistentFlags().StringP("dotenv_path", "d", "", ".env configuration file path")
-	viper.BindEnv("dotenv_path", "DOTENV_PATH")
+	viper.BindEnv("mgl_api_url", "MGL_API_URL")
+	RootCmd.PersistentFlags().StringP("cli_config_path", "C", "~/.magellanic/creds", "configuration file path")
+	viper.BindEnv("mgl_cli_config_path", "MGL_CLI_CONFIG_PATH")
 }
 
 func validateParams(cmd *cobra.Command) error {
