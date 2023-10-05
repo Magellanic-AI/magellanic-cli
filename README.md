@@ -3,7 +3,7 @@
 Magellanic is the continuous Access Control to protect Non-Human identities and Workloads
 Learn more at [the website(https://www.magellanic.ai).
 
-Get started at [Magellanic](https://admin.magellanic.ai).
+Get started at (Magellanic)[https://admin.magellanic.ai].
 
 ## Overview
 Magellanic CLI is a simple CLI tool for integrating with the Magellanic REST API
