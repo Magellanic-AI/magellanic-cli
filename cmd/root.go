@@ -14,6 +14,8 @@ import (
 
 const ViperPrefix = "mgl_"
 
+var home, _ = os.UserHomeDir()
+
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use: "magellanic-cli",
@@ -57,7 +59,10 @@ func init() {
 	viper.BindEnv("mgl_api_key", "MGL_API_KEY")
 	RootCmd.PersistentFlags().StringP("api_url", "u", "https://api.magellanic.ai", "API url")
 	viper.BindEnv("mgl_api_url", "MGL_API_URL")
-	RootCmd.PersistentFlags().StringP("cli_config_path", "C", "~/.magellanic/creds", "configuration file path")
+	if home == "" {
+		home = "."
+	}
+	RootCmd.PersistentFlags().StringP("cli_config_path", "C", home+"/.magellanic/creds", "configuration file path")
 	viper.BindEnv("mgl_cli_config_path", "MGL_CLI_CONFIG_PATH")
 }
 
